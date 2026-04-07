@@ -2,12 +2,15 @@
   "name": "Glass Inventory Management",
   "short_name": "Glass Inventory",
   "description": "Mobile glass inventory management system",
-  "start_url": "./",
+  "start_url": "./index.html",
+  "id": "./index.html",
   "display": "standalone",
+  "display_override": ["standalone", "minimal-ui"],
   "background_color": "#667eea",
   "theme_color": "#667eea",
   "orientation": "portrait",
   "scope": "./",
+  "prefer_related_applications": false,
   "icons": [
     {
       "src": "icons/icon-192.png",
