@@ -1,9 +1,10 @@
 const CACHE_NAME = 'glass-inventory-v1';
 const urlsToCache = [
-  '/',
-  '/index.html',
-  '/styles.css',
-  '/script.js',
+  './',
+  'index.html',
+  'styles.css',
+  'script.js',
+  'manifest.json',
   'https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700&display=swap'
 ];
 
