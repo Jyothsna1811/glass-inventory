@@ -1,52 +1,24 @@
-// Glass Inventory Management System
 class GlassInventory {
     constructor() {
-        this.inventory = this.loadInventory();
+        this.inventory = JSON.parse(localStorage.getItem('glassInventory')) || {};
         this.predefinedModels = [
             'Realme 5','F19','6i','9i','Note 9 Pro','C55','MI 12',
             'Samsung A35 / M35 / F35','CE2 Lite','Note 9','Nothing CMF',
-            'Nothing 2A / 2A+','Nothing 3A / 3A Pro','Reno 13 / 14',
-            'V20','V20 Pro','Samsung A30','5 Pro','Y91','Y19','Y11 / Y12',
-            'Samsung F15','Note 7','Vivo S1','Redmi 9A','Redmi 10C',
-            'Redmi 14C','Samsung A26','Samsung A14','Realme C53',
-            'Samsung S20','iPhone 11','iPhone 12','iPhone 13',
-            'iPhone 14 Pro','iPhone 16 Pro','iPhone 11 Pro Max',
-            'iPhone 12 Pro Max','iPhone 13 Pro Max','iPhone 15 Pro',
-            'iPhone 16 Pro Max'
+            'Nothing 2A / 2A+','Nothing 3A / 3A Pro','Reno 13 / 14'
         ];
         this.init();
     }
 
     init() {
-        this.setupEventListeners();
-        this.registerServiceWorker();
-    }
-
-    registerServiceWorker() {
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('./sw.js');
-        }
-    }
-
-    setupEventListeners() {
         document.getElementById('addBtn').onclick = () => this.showAddModal();
         document.getElementById('removeBtn').onclick = () => this.showRemoveModal();
         document.getElementById('addVariantBtn').onclick = () => this.showAddVariantModal();
         document.getElementById('listBtn').onclick = () => this.showListModal();
 
         document.querySelector('.close').onclick = () => this.closeModal();
-        window.onclick = (e) => {
-            if (e.target === document.getElementById('modal')) {
-                this.closeModal();
-            }
-        };
     }
 
-    loadInventory() {
-        return JSON.parse(localStorage.getItem('glassInventory')) || {};
-    }
-
-    saveInventory() {
+    save() {
         localStorage.setItem('glassInventory', JSON.stringify(this.inventory));
     }
 
@@ -62,17 +34,29 @@ class GlassInventory {
         document.getElementById('modal').style.display = 'none';
     }
 
-    // ---------------- ADD ----------------
+    // ================= ADD =================
     showAddModal() {
         const allModels = [...new Set([...this.predefinedModels, ...Object.keys(this.inventory)])];
 
         const content = `
-            <input id="search" placeholder="Search model..." oninput="glassInventory.filterOptions()"><br><br>
-            <select id="modelSelect">
-                ${allModels.map(m => `<option value="${m}">${m}</option>`).join('')}
-            </select><br><br>
-            <input id="qty" type="number" value="1"><br><br>
-            <button onclick="glassInventory.add()">Add</button>
+            <div class="form-group">
+                <label>Search Model</label>
+                <input id="search" placeholder="Search..." oninput="glassInventory.filterOptions()">
+            </div>
+
+            <div class="form-group">
+                <label>Select Model</label>
+                <select id="modelSelect">
+                    ${allModels.map(m => `<option value="${m}">${m}</option>`).join('')}
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Quantity</label>
+                <input id="qty" type="number" value="1">
+            </div>
+
+            <button class="btn" onclick="glassInventory.add()">Add Item</button>
         `;
 
         this.showModal("Add Item", content);
@@ -94,21 +78,28 @@ class GlassInventory {
         if (!m || q <= 0) return alert("Invalid");
 
         this.inventory[m] = (this.inventory[m] || 0) + q;
-
-        this.saveInventory();
+        this.save();
         this.closeModal();
     }
 
-    // ---------------- REMOVE ----------------
+    // ================= REMOVE =================
     showRemoveModal() {
         const models = Object.keys(this.inventory);
 
         const content = `
-            <select id="rmodel">
-                ${models.map(m => `<option value="${m}">${m} (${this.inventory[m]})</option>`).join('')}
-            </select><br><br>
-            <input id="rqty" type="number" value="1"><br><br>
-            <button onclick="glassInventory.remove()">Remove</button>
+            <div class="form-group">
+                <label>Select Model</label>
+                <select id="rmodel">
+                    ${models.map(m => `<option value="${m}">${m} (${this.inventory[m]})</option>`).join('')}
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Quantity</label>
+                <input id="rqty" type="number" value="1">
+            </div>
+
+            <button class="btn btn-danger" onclick="glassInventory.remove()">Remove</button>
         `;
 
         this.showModal("Remove Item", content);
@@ -122,21 +113,27 @@ class GlassInventory {
 
         this.inventory[m] -= q;
 
-        // ✅ FIX: DO NOT DELETE WHEN ZERO
-        if (this.inventory[m] < 0) {
-            this.inventory[m] = 0;
-        }
+        // FIX: don't delete item
+        if (this.inventory[m] < 0) this.inventory[m] = 0;
 
-        this.saveInventory();
+        this.save();
         this.closeModal();
     }
 
-    // ---------------- ADD VARIANT ----------------
+    // ================= ADD VARIANT =================
     showAddVariantModal() {
         const content = `
-            <input id="vname" placeholder="New Model"><br><br>
-            <input id="vqty" type="number" value="1"><br><br>
-            <button onclick="glassInventory.addVariant()">Add</button>
+            <div class="form-group">
+                <label>New Model</label>
+                <input id="vname" placeholder="Enter model">
+            </div>
+
+            <div class="form-group">
+                <label>Quantity</label>
+                <input id="vqty" type="number" value="1">
+            </div>
+
+            <button class="btn" onclick="glassInventory.addVariant()">Add Variant</button>
         `;
 
         this.showModal("Add Variant", content);
@@ -149,45 +146,50 @@ class GlassInventory {
         if (!m || q < 0) return alert("Invalid");
 
         this.inventory[m] = q;
-
-        this.saveInventory();
+        this.save();
         this.closeModal();
     }
 
-    // ---------------- LIST ----------------
+    // ================= LIST =================
     showListModal() {
         const allModels = [...new Set([...this.predefinedModels, ...Object.keys(this.inventory)])].sort();
 
-        let tableRows = '';
+        let rows = '';
 
-        allModels.forEach(model => {
-            const quantity = this.inventory[model] || 0;
+        allModels.forEach(m => {
+            const q = this.inventory[m] || 0;
+            const rowClass = q === 0 ? 'zero-stock' : '';
+            const quantityClass = q === 0 ? 'quantity-badge zero' : 'quantity-badge';
 
-            tableRows += `
-    <tr class="${rowClass}">
-        <td>${model}</td>
-        <td><span class="${quantityClass}">${quantity}</span></td>
-        <td class="action-buttons">
-            <button class="edit-btn" onclick="glassInventory.editItem('${model}')">✏️</button>
-            <button class="delete-btn" onclick="glassInventory.deleteItem('${model}')">🗑️</button>
-        </td>
-    </tr>
-`;
+            rows += `
+                <tr class="${rowClass}">
+                    <td>${m}</td>
+                    <td><span class="${quantityClass}">${q}</span></td>
+                    <td class="action-buttons">
+                        <button class="edit-btn" onclick="glassInventory.editItem('${m}')">✏️</button>
+                        <button class="delete-btn" onclick="glassInventory.deleteItem('${m}')">🗑️</button>
+                    </td>
+                </tr>
+            `;
         });
 
         const content = `
-            <input id="listSearch" placeholder="Search..." oninput="glassInventory.searchList()"><br><br>
-            <table id="inventoryTable">
+            <div class="search-box">
+                <span class="search-icon">🔍</span>
+                <input id="listSearch" placeholder="Search..." oninput="glassInventory.searchList()">
+            </div>
+
+            <table class="inventory-table" id="inventoryTable">
                 <tr>
                     <th>Model</th>
                     <th>Quantity</th>
                     <th>Actions</th>
                 </tr>
-                ${tableRows}
+                ${rows}
             </table>
         `;
 
-        this.showModal('Inventory List', content);
+        this.showModal("Inventory List", content);
     }
 
     searchList() {
@@ -200,32 +202,26 @@ class GlassInventory {
         });
     }
 
-    // ---------------- EDIT ----------------
+    // ================= EDIT =================
     editItem(oldName) {
         const newName = prompt("Edit name:", oldName);
-
         if (!newName || newName.trim() === "") return;
 
-        if (this.inventory[newName]) {
-            alert("Item already exists!");
-            return;
-        }
+        if (this.inventory[newName]) return alert("Already exists");
 
         this.inventory[newName] = this.inventory[oldName];
         delete this.inventory[oldName];
 
-        this.saveInventory();
+        this.save();
         this.showListModal();
     }
 
-    // ---------------- DELETE ----------------
-    deleteItem(model) {
-        const confirmDelete = confirm("Are you sure you want to delete this item?");
-        if (!confirmDelete) return;
+    // ================= DELETE =================
+    deleteItem(name) {
+        if (!confirm("Are you sure you want to delete this item?")) return;
 
-        delete this.inventory[model];
-
-        this.saveInventory();
+        delete this.inventory[name];
+        this.save();
         this.showListModal();
     }
 }
