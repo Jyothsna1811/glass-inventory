@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Glass Inventory Management</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#667eea">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Glass Inventory">
+    <meta name="description" content="Mobile glass inventory management system">
+    
+    <!-- PWA Icons -->
+    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%23667eea' width='100' height='100'/><text x='50' y='50' text-anchor='middle' dy='.3em' fill='white' font-size='60'>🔮</text></svg>">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%23667eea' width='100' height='100'/><text x='50' y='50' text-anchor='middle' dy='.3em' fill='white' font-size='60'>🔮</text></svg>">
+    
+    <!-- Manifest -->
+    <link rel="manifest" href="manifest.json">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🔮 Glass Inventory</h1>
+        </header>
+        
+        <main>
+            <div class="button-grid">
+                <button class="action-btn" id="addBtn">
+                    <span class="btn-icon">➕</span>
+                    <span class="btn-text">Add</span>
+                </button>
+                <button class="action-btn" id="removeBtn">
+                    <span class="btn-icon">➖</span>
+                    <span class="btn-text">Remove</span>
+                </button>
+                <button class="action-btn" id="addVariantBtn">
+                    <span class="btn-icon">🆕</span>
+                    <span class="btn-text">Add Variant</span>
+                </button>
+                <button class="action-btn" id="listBtn">
+                    <span class="btn-icon">📋</span>
+                    <span class="btn-text">Overall List</span>
+                </button>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal Container -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <div id="modalBody"></div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
