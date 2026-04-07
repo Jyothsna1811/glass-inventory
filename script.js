@@ -164,15 +164,15 @@ class GlassInventory {
             const quantity = this.inventory[model] || 0;
 
             tableRows += `
-                <tr>
-                    <td>${model}</td>
-                    <td>${quantity === 0 ? '<span style="color:red;">Out of Stock</span>' : quantity}</td>
-                    <td>
-                        <button onclick="glassInventory.editItem('${model}')">✏️</button>
-                        <button onclick="glassInventory.deleteItem('${model}')">🗑️</button>
-                    </td>
-                </tr>
-            `;
+    <tr class="${rowClass}">
+        <td>${model}</td>
+        <td><span class="${quantityClass}">${quantity}</span></td>
+        <td class="action-buttons">
+            <button class="edit-btn" onclick="glassInventory.editItem('${model}')">✏️</button>
+            <button class="delete-btn" onclick="glassInventory.deleteItem('${model}')">🗑️</button>
+        </td>
+    </tr>
+`;
         });
 
         const content = `
